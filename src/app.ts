@@ -20,9 +20,9 @@ app.use(express.json());
 connectDB();
 
 app.get<unknown, MessageResponse>("/", (req, res) => {
-	res.json({
-		message: "Hello",
-	});
+  res.json({
+    message: "Hello",
+  });
 });
 
 app.use("/api", api);

@@ -9,12 +9,14 @@
     "build": "tsc",
     "lint": "eslint --fix src test",
     "format": "prettier --write src test",
-    "test": "jest",
+    "test": "jest --runInBand",
     "typecheck": "tsc --noEmit"
   },
   "author": "dimslaev@gmail.com",
   "license": "MIT",
   "dependencies": {
+    "@types/bcryptjs": "^2.4.5",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.1.4",
     "express": "^4.18.2",

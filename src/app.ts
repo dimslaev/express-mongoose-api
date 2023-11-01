@@ -3,7 +3,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
 import connectDB from "./db";
-import * as middlewares from "./middlewares";
+import { errorHandler } from "./middlewares/errorHandler";
 import api from "./api";
 import MessageResponse from "./interfaces/MessageResponse";
 import dotenv from "dotenv";
@@ -27,6 +27,6 @@ app.get<unknown, MessageResponse>("/", (req, res) => {
 
 app.use("/api", api);
 
-app.use(middlewares.errorHandler);
+app.use(errorHandler);
 
 export default app;

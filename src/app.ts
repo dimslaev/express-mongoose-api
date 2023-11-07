@@ -2,11 +2,12 @@ import express from "express";
 import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
-import connectDB from "./db";
-import { errorHandler } from "./middlewares/errorHandler";
-import api from "./api";
-import MessageResponse from "./interfaces/MessageResponse";
 import dotenv from "dotenv";
+
+import { connectDB } from "./db";
+import { errorHandler } from "./middlewares";
+import { api } from "./api";
+import { MessageResponse } from "./interfaces";
 
 dotenv.config();
 

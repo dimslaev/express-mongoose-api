@@ -1,33 +1,33 @@
-import User, { TUser } from "./user.model";
 import * as bcrypt from "bcryptjs";
+import { User, UserModel } from "./user.model";
 
-async function getAll() {
-  return User.find().select("-password");
-}
+export const getAll = async (withPassword = false) => {
+  return UserModel.find().select(withPassword ? {} : "-password");
+};
 
-async function get(id: string) {
-  return User.findOne({ _id: id }).select("-password");
-}
+export const get = async (_id: string, withPassword = false) => {
+  return UserModel.findOne({ _id }).select(withPassword ? {} : "-password");
+};
 
-async function search(email: string) {
-  return User.findOne({ email }).select("-password");
-}
+export const find = async (email: string, withPassword = false) => {
+  return UserModel.findOne({ email }).select(withPassword ? {} : "-password");
+};
 
-async function create(data: TUser) {
-  return new User({
+export const create = async (data: User) => {
+  return new UserModel({
     ...data,
     password: bcrypt.hashSync(data.password, 8),
   }).save();
-}
+};
 
-async function update(id: string, data: TUser) {
-  return User.findOneAndUpdate({ _id: id }, data, {
+export const update = async (id: string, data: User, withPassword = false) => {
+  return UserModel.findOneAndUpdate({ _id: id }, data, {
     returnDocument: "after",
-  }).select("-password");
-}
+  }).select(withPassword ? {} : "-password");
+};
 
-async function remove(id: string) {
-  return User.findByIdAndDelete(id);
-}
-
-export { getAll, get, search, create, update, remove };
+export const remove = async (id: string, withPassword = false) => {
+  return UserModel.findByIdAndDelete(id).select(
+    withPassword ? {} : "-password",
+  );
+};

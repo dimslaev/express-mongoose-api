@@ -1,15 +1,15 @@
 import request from "supertest";
 import app from "../src/app";
 import mongoose from "mongoose";
-import User, { TUserDoc } from "../src/api/user/user.model";
+import { UserModel, User } from "../src/api/user/user.model";
 
 afterAll(async () => {
-  await User.deleteMany();
+  await UserModel.deleteMany();
   mongoose.connection.close();
 });
 
 describe("User Component", () => {
-  let user1: TUserDoc;
+  let user1: User;
 
   describe("POST /api/user", () => {
     it("should add one user", async () => {

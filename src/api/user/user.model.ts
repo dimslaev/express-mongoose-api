@@ -1,16 +1,15 @@
 import mongoose from "mongoose";
 
-export type TUserRole = "admin" | "default";
+export type UserRole = "admin" | "default";
 
-export type TUser = {
+export type User = {
+  _id?: string;
   email: string;
   password: string;
-  role: TUserRole;
+  role: UserRole;
 };
 
-export type TUserDoc = mongoose.Document & TUser;
-
-export const UserSchema = new mongoose.Schema<TUser>({
+export const UserSchema = new mongoose.Schema<User>({
   email: {
     type: String,
     required: true,
@@ -26,4 +25,4 @@ export const UserSchema = new mongoose.Schema<TUser>({
   },
 });
 
-export default mongoose.model<TUser>("User", UserSchema);
+export const UserModel = mongoose.model<User>("User", UserSchema);

@@ -3,7 +3,7 @@ import app from "../src/app";
 import mongoose from "mongoose";
 import User from "../src/api/user/user.model";
 import { getToken } from "../src/utils";
-import { search as searchUser } from "../src/api/user/user.service";
+import { find as findUser } from "../src/api/user/user.service";
 
 afterAll(async () => {
   await User.deleteMany();
@@ -56,7 +56,7 @@ describe("Auth Component", () => {
   describe("POST /api/auth/change-password", () => {
     // Sunny
     it("should change user password and return token if user is logged in", async () => {
-      const user = await searchUser("user1@example.com");
+      const user = await findUser("user1@example.com");
       const id = user?._id as unknown as string;
       const token = await getToken(id, "user1@example.com");
 
@@ -70,7 +70,7 @@ describe("Auth Component", () => {
     });
     // Rainy
     it("should return error if user is not logged in", async () => {
-      const user = await searchUser("user1@example.com");
+      const user = await findUser("user1@example.com");
       const id = user?._id as unknown as string;
 
       const res = await request(app)

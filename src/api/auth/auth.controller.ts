@@ -1,12 +1,8 @@
 import { Request, Response } from "express";
-import User, { TUserDoc } from "../user/user.model";
-import {
-  get as getUser,
-  create as createUser,
-  update as updateUser,
-} from "../user/user.service";
+import { TUser } from "../user/user.model";
+import * as userService from "../user/user.service";
 import * as bcrypt from "bcryptjs";
-import { getToken } from "../../utils";
+import { freshToken } from "../../utils";
 
 async function login(req: Request, res: Response) {
   const { email, password } = req.body;
@@ -15,9 +11,9 @@ async function login(req: Request, res: Response) {
     return res.status(400).send();
   }
 
-  let user: TUserDoc | null = null;
+  let user: TUser | null = null;
   try {
-    user = await User.findOne({ email });
+    user = await userService.find(email, true);
   } catch (err) {
     return res.status(401).send();
   }
@@ -28,8 +24,7 @@ async function login(req: Request, res: Response) {
     return res.status(401).send();
   }
 
-  const token = getToken(user?._id || "", email);
-  res.setHeader("authorization", token);
+  res.setHeader("authorization", freshToken(user?._id || "", email));
   res.status(200).send();
 }
 
@@ -37,18 +32,17 @@ async function signup(req: Request, res: Response) {
   const { email, password } = req.body;
 
   if (!(email && password)) {
-    res.status(400).send();
+    return res.status(400).send();
   }
 
-  let user: TUserDoc | null = null;
+  let user: TUser | null = null;
   try {
-    user = await createUser({ email, password, role: "default" });
+    user = await userService.create({ email, password, role: "default" });
   } catch (err) {
     return res.status(500).send();
   }
 
-  const token = getToken(user?._id || "", email);
-  res.setHeader("authorization", token);
+  res.setHeader("authorization", freshToken(user?._id || "", email));
   res.status(201).send();
 }
 
@@ -59,15 +53,15 @@ async function changePassword(req: Request, res: Response) {
     return res.status(400).send();
   }
 
-  let user: TUserDoc | null = null;
+  let user: TUser | null = null;
   try {
-    user = await getUser(id);
+    user = await userService.get(id);
   } catch (err) {
     return res.status(401).send();
   }
 
   try {
-    await updateUser(id, {
+    await userService.update(id, {
       email: user?.email || "",
       role: user?.role || "default",
       password,
@@ -76,8 +70,7 @@ async function changePassword(req: Request, res: Response) {
     return res.status(500).send();
   }
 
-  const token = getToken(id, user?.email || "");
-  res.setHeader("authorization", token);
+  res.setHeader("authorization", freshToken(id, user?.email || ""));
   res.status(200).send();
 }
 

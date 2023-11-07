@@ -1,16 +1,16 @@
 import User, { TUser } from "./user.model";
 import * as bcrypt from "bcryptjs";
 
-async function getAll() {
-  return User.find().select("-password");
+async function getAll(withPassword = false) {
+  return User.find().select(withPassword ? {} : "-password");
 }
 
-async function get(id: string) {
-  return User.findOne({ _id: id }).select("-password");
+async function get(_id: string, withPassword = false) {
+  return User.findOne({ _id }).select(withPassword ? {} : "-password");
 }
 
-async function search(email: string) {
-  return User.findOne({ email }).select("-password");
+async function find(email: string, withPassword = false) {
+  return User.findOne({ email }).select(withPassword ? {} : "-password");
 }
 
 async function create(data: TUser) {
@@ -20,14 +20,14 @@ async function create(data: TUser) {
   }).save();
 }
 
-async function update(id: string, data: TUser) {
+async function update(id: string, data: TUser, withPassword = false) {
   return User.findOneAndUpdate({ _id: id }, data, {
     returnDocument: "after",
-  }).select("-password");
+  }).select(withPassword ? {} : "-password");
 }
 
-async function remove(id: string) {
-  return User.findByIdAndDelete(id);
+async function remove(id: string, withPassword = false) {
+  return User.findByIdAndDelete(id).select(withPassword ? {} : "-password");
 }
 
-export { getAll, get, search, create, update, remove };
+export { getAll, get, find, create, update, remove };

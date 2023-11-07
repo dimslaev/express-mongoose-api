@@ -3,12 +3,11 @@ import mongoose from "mongoose";
 export type TUserRole = "admin" | "default";
 
 export type TUser = {
+  _id?: string;
   email: string;
   password: string;
   role: TUserRole;
 };
-
-export type TUserDoc = mongoose.Document & TUser;
 
 export const UserSchema = new mongoose.Schema<TUser>({
   email: {

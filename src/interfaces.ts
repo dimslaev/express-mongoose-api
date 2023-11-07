@@ -8,7 +8,7 @@ export interface ErrorResponse extends MessageResponse {
   stack?: string;
 }
 
-export interface IJwtToken extends JwtPayload {
+export interface JwtToken extends JwtPayload {
   id: string;
   email: string;
 }

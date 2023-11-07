@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
 import IJwtToken from "../interfaces/JwtToken";
-import { getToken } from "../utils";
+import { freshToken } from "../utils";
 
 export function checkAuth(req: Request, res: Response, next: NextFunction) {
   const authToken = req.headers.authorization?.split(" ")[1];
@@ -18,7 +18,7 @@ export function checkAuth(req: Request, res: Response, next: NextFunction) {
     return res.status(403);
   }
 
-  const newToken = getToken(token.id, token.email);
+  const newToken = freshToken(token.id, token.email);
 
   res.locals.jwtPayload = token; // needed for other middlewares
   res.setHeader("authorization", newToken);

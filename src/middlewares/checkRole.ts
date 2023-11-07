@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import IJwtToken from "../interfaces/JwtToken";
 import { get as getUser } from "../api/user/user.service";
-import { TUser } from "../api/user/user.model";
+import { User } from "../api/user/user.model";
 
 export const checkRole = (roles: Array<string>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const jwtPayload: IJwtToken = res.locals.jwtPayload;
 
-    let user: Omit<TUser, "id"> | null = null;
+    let user: Omit<User, "id"> | null = null;
     try {
       user = await getUser(jwtPayload.id);
     } catch (id) {

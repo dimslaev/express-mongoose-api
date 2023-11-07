@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { TUser } from "../user/user.model";
+import { User } from "../user/user.model";
 import * as userService from "../user/user.service";
 import * as bcrypt from "bcryptjs";
 import { freshToken } from "../../utils";
@@ -11,7 +11,7 @@ async function login(req: Request, res: Response) {
     return res.status(400).send();
   }
 
-  let user: TUser | null = null;
+  let user: User | null = null;
   try {
     user = await userService.find(email, true);
   } catch (err) {
@@ -35,7 +35,7 @@ async function signup(req: Request, res: Response) {
     return res.status(400).send();
   }
 
-  let user: TUser | null = null;
+  let user: User | null = null;
   try {
     user = await userService.create({ email, password, role: "default" });
   } catch (err) {
@@ -53,7 +53,7 @@ async function changePassword(req: Request, res: Response) {
     return res.status(400).send();
   }
 
-  let user: TUser | null = null;
+  let user: User | null = null;
   try {
     user = await userService.get(id);
   } catch (err) {

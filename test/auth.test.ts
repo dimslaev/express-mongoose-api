@@ -1,12 +1,12 @@
 import request from "supertest";
 import app from "../src/app";
 import mongoose from "mongoose";
-import User from "../src/api/user/user.model";
-import { getToken } from "../src/utils";
+import { UserModel } from "../src/api/user/user.model";
+import { freshToken } from "../src/utils";
 import { find as findUser } from "../src/api/user/user.service";
 
 afterAll(async () => {
-  await User.deleteMany();
+  await UserModel.deleteMany();
   mongoose.connection.close();
 });
 
@@ -58,7 +58,7 @@ describe("Auth Component", () => {
     it("should change user password and return token if user is logged in", async () => {
       const user = await findUser("user1@example.com");
       const id = user?._id as unknown as string;
-      const token = await getToken(id, "user1@example.com");
+      const token = await freshToken(id, "user1@example.com");
 
       const res = await request(app)
         .post("/api/auth/change-password")

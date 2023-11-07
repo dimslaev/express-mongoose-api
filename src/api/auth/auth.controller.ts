@@ -4,7 +4,7 @@ import * as userService from "../user/user.service";
 import * as bcrypt from "bcryptjs";
 import { freshToken } from "../../utils";
 
-async function login(req: Request, res: Response) {
+export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   if (!(email && password)) {
@@ -26,9 +26,9 @@ async function login(req: Request, res: Response) {
 
   res.setHeader("authorization", freshToken(user?._id || "", email));
   res.status(200).send();
-}
+};
 
-async function signup(req: Request, res: Response) {
+export const signup = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   if (!(email && password)) {
@@ -44,9 +44,9 @@ async function signup(req: Request, res: Response) {
 
   res.setHeader("authorization", freshToken(user?._id || "", email));
   res.status(201).send();
-}
+};
 
-async function changePassword(req: Request, res: Response) {
+export const changePassword = async (req: Request, res: Response) => {
   const { id, password } = req.body;
 
   if (!(id && password)) {
@@ -72,6 +72,4 @@ async function changePassword(req: Request, res: Response) {
 
   res.setHeader("authorization", freshToken(id, user?.email || ""));
   res.status(200).send();
-}
-
-export { login, signup, changePassword };
+};

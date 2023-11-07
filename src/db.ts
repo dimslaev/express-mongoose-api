@@ -1,6 +1,6 @@
 import mongoose, { ConnectOptions } from "mongoose";
 
-export default async function connectDB() {
+export const connectDB = async () => {
   if (!process.env.MONGODB_URI) {
     throw new Error('Missing environment variable: "MONGODB_URI"');
   }
@@ -20,4 +20,4 @@ export default async function connectDB() {
     console.log(err);
     process.exit(1);
   }
-}
+};

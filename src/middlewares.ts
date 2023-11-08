@@ -31,7 +31,7 @@ export const checkRole = (roles: Array<string>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const jwtPayload: JwtToken = res.locals.jwtPayload;
 
-    let user: Omit<User, "id"> | null = null;
+    let user: User | null = null;
     try {
       user = await getUser(jwtPayload.id);
     } catch (id) {

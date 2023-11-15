@@ -5,7 +5,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import { api } from "./api";
-import { MessageResponse } from "./interfaces";
 
 dotenv.config();
 
@@ -16,7 +15,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-app.get<unknown, MessageResponse>("/", (req, res) => {
+app.get("/", (req, res) => {
   res.json({
     message: "Hello",
   });

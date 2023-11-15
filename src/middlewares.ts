@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
-import { JwtToken, ErrorResponse } from "./interfaces";
-import { freshToken } from "./utils";
+import { JwtToken } from "./interfaces";
+import { getToken } from "./utils";
 import { get as getUser } from "./api/user/user.service";
-import { User } from "./api/user/user.model";
+import { User } from "@prisma/client";
 
 export function checkAuth(req: Request, res: Response, next: NextFunction) {
   const authToken = req.headers.authorization?.split(" ")[1];
@@ -20,7 +20,7 @@ export function checkAuth(req: Request, res: Response, next: NextFunction) {
     return res.status(403);
   }
 
-  const newToken = freshToken(token.id, token.email);
+  const newToken = getToken(token.id, token.email);
 
   res.locals.jwtPayload = token; // needed for other middlewares
   res.setHeader("authorization", newToken);
@@ -45,16 +45,3 @@ export const checkRole = (roles: Array<string>) => {
     }
   };
 };
-
-export function errorHandler(
-  err: Error,
-  req: Request,
-  res: Response<ErrorResponse>,
-) {
-  const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
-  res.status(statusCode);
-  res.json({
-    message: err.message,
-    stack: process.env.NODE_ENV === "production" ? "" : err.stack,
-  });
-}

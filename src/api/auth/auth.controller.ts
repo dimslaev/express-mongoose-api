@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { User } from "../user/user.model";
+import { User } from "@prisma/client";
 import * as userService from "../user/user.service";
 import * as bcrypt from "bcryptjs";
-import { freshToken } from "../../utils";
+import { getToken } from "../../utils";
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -13,8 +13,9 @@ export const login = async (req: Request, res: Response) => {
 
   let user: User | null = null;
   try {
-    user = await userService.find(email, true);
+    user = await userService.find(email);
   } catch (err) {
+    console.log(err);
     return res.status(401).send();
   }
 
@@ -24,7 +25,7 @@ export const login = async (req: Request, res: Response) => {
     return res.status(401).send();
   }
 
-  res.setHeader("authorization", freshToken(user?._id || "", email));
+  res.setHeader("authorization", getToken(user?.id || "", email));
   res.status(200).send();
 };
 
@@ -37,12 +38,12 @@ export const signup = async (req: Request, res: Response) => {
 
   let user: User | null = null;
   try {
-    user = await userService.create({ email, password, role: "default" });
+    user = await userService.create({ email, password, role: "USER" });
   } catch (err) {
     return res.status(500).send();
   }
 
-  res.setHeader("authorization", freshToken(user?._id || "", email));
+  res.setHeader("authorization", getToken(user?.id || "", email));
   res.status(201).send();
 };
 
@@ -61,15 +62,11 @@ export const changePassword = async (req: Request, res: Response) => {
   }
 
   try {
-    await userService.update(id, {
-      email: user?.email || "",
-      role: user?.role || "default",
-      password,
-    });
+    await userService.update(req.body);
   } catch (err) {
     return res.status(500).send();
   }
 
-  res.setHeader("authorization", freshToken(id, user?.email || ""));
+  res.setHeader("authorization", getToken(id, user?.email || ""));
   res.status(200).send();
 };

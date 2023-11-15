@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as userService from "./user.service";
+import { getUserWithoutPassword } from "../../utils";
 
 export const getAll = async (
   req: Request,
@@ -7,7 +8,8 @@ export const getAll = async (
   next: NextFunction,
 ) => {
   try {
-    res.json(await userService.getAll());
+    const result = await userService.getAll();
+    res.json(result.map(getUserWithoutPassword));
   } catch (err) {
     next(err);
   }
@@ -15,7 +17,8 @@ export const getAll = async (
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.json(await userService.get(req.params.id));
+    const result = await userService.get(req.params.id);
+    res.json(getUserWithoutPassword(result));
   } catch (err) {
     next(err);
   }
@@ -27,7 +30,8 @@ export const create = async (
   next: NextFunction,
 ) => {
   try {
-    res.status(201).json(await userService.create(req.body));
+    const result = await userService.create(req.body);
+    res.status(201).json(getUserWithoutPassword(result));
   } catch (err) {
     next(err);
   }
@@ -39,7 +43,8 @@ export const update = async (
   next: NextFunction,
 ) => {
   try {
-    res.json(await userService.update(req.params.id, req.body));
+    const result = await userService.update(req.body);
+    res.json(getUserWithoutPassword(result));
   } catch (err) {
     next(err);
   }

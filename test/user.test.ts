@@ -1,27 +1,33 @@
 import request from "supertest";
 import app from "../src/app";
-import mongoose from "mongoose";
-import { UserModel, User } from "../src/api/user/user.model";
+import { prisma } from "../src/prisma";
+import { User } from "@prisma/client";
+
+const fakeUser: User = {
+  id: "123",
+  email: "user1@example.com",
+  password: "123456",
+  role: "ADMIN",
+};
 
 afterAll(async () => {
-  await UserModel.deleteMany();
-  mongoose.connection.close();
+  try {
+    await prisma.user.delete({ where: { email: fakeUser.email } });
+  } catch (e) {
+    //
+  }
 });
 
 describe("User Component", () => {
-  let user1: User;
-
   describe("POST /api/user", () => {
     it("should add one user", async () => {
-      const res = await request(app).post("/api/user").send({
-        email: "user1@example.com",
-        password: "123456",
-        role: "admin",
-      });
+      const res = await request(app)
+        .post("/api/user")
+        .send({ ...fakeUser, id: undefined });
       expect(res.statusCode).toBe(201);
-      expect(res.body).toHaveProperty("_id");
+      expect(res.body).toHaveProperty("id");
       expect(res.body.email).toBe("user1@example.com");
-      user1 = res.body;
+      fakeUser.id = res.body.id;
     });
   });
 
@@ -35,28 +41,29 @@ describe("User Component", () => {
 
   describe("GET /api/user/:id", () => {
     it("should return one user", async () => {
-      const res = await request(app).get(`/api/user/${user1._id}`);
+      const res = await request(app).get(`/api/user/${fakeUser.id}`);
       expect(res.statusCode).toBe(200);
-      expect(res.body).toHaveProperty("_id");
+      expect(res.body).toHaveProperty("id");
     });
   });
 
   describe("PUT /api/user/:id", () => {
     it("should update one user", async () => {
-      const res = await request(app).put(`/api/user/${user1._id}`).send({
-        email: "user1@example.com",
-        password: "123456",
-        role: "default",
-      });
+      const res = await request(app)
+        .put(`/api/user/${fakeUser.id}`)
+        .send({
+          ...fakeUser,
+          role: "USER",
+        });
 
       expect(res.statusCode).toBe(200);
-      expect(res.body.role).toBe("default");
+      expect(res.body.role).toBe("USER");
     });
   });
 
   describe("DELETE /api/user/:id", () => {
     it("should delete one user", async () => {
-      const res = await request(app).delete(`/api/user/${user1._id}`);
+      const res = await request(app).delete(`/api/user/${fakeUser.id}`);
       expect(res.statusCode).toBe(200);
     });
   });

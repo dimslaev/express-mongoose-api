@@ -4,8 +4,6 @@ import helmet from "helmet";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import { connectDB } from "./db";
-import { errorHandler } from "./middlewares";
 import { api } from "./api";
 import { MessageResponse } from "./interfaces";
 
@@ -18,8 +16,6 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-connectDB();
-
 app.get<unknown, MessageResponse>("/", (req, res) => {
   res.json({
     message: "Hello",
@@ -27,7 +23,5 @@ app.get<unknown, MessageResponse>("/", (req, res) => {
 });
 
 app.use("/api", api);
-
-app.use(errorHandler);
 
 export default app;

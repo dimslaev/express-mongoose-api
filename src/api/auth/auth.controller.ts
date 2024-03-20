@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "@prisma/client";
 import * as userService from "../user/user.service";
-import * as bcrypt from "bcryptjs";
-import { getToken } from "../../utils";
+import { getToken, comparePassword } from "../../utils";
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -19,7 +18,7 @@ export const login = async (req: Request, res: Response) => {
     return res.status(401).send();
   }
 
-  const passwordsMatch = await bcrypt.compare(password, user?.password || "");
+  const passwordsMatch = await comparePassword(password, user?.password || "");
 
   if (!passwordsMatch) {
     return res.status(401).send();

@@ -1,7 +1,7 @@
 {
-  "name": "express-mongoose-api",
+  "name": "prisma-api",
   "version": "1.0.0",
-  "description": "Clean api with mongoose, typescript and e2e tests.",
+  "description": "Clean API with prisma, typescript and unit tests.",
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node src/index.ts",
@@ -9,7 +9,7 @@
     "build": "tsc",
     "lint": "eslint --fix src test",
     "format": "prettier --write src test",
-    "test": "jest --runInBand",
+    "test": "jest --coverage",
     "typecheck": "tsc --noEmit"
   },
   "author": "dimslaev@gmail.com",
